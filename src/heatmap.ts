@@ -13,8 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-import {Example2D} from "./dataset";
-import * as d3 from 'd3';
+import { Example2D } from "./dataset";
+import * as d3 from "d3";
 
 export interface HeatMapSettings {
   [key: string]: any;
@@ -33,7 +33,7 @@ const NUM_SHADES = 30;
 export class HeatMap {
   private settings: HeatMapSettings = {
     showAxes: false,
-    noSvg: false
+    noSvg: false,
   };
   private xScale;
   private yScale;
@@ -43,9 +43,13 @@ export class HeatMap {
   private svg;
 
   constructor(
-      width: number, numSamples: number, xDomain: [number, number],
-      yDomain: [number, number], container,
-      userSettings?: HeatMapSettings) {
+    width: number,
+    numSamples: number,
+    xDomain: [number, number],
+    yDomain: [number, number],
+    container,
+    userSettings?: HeatMapSettings
+  ) {
     this.numSamples = numSamples;
     let height = width;
     let padding = userSettings.showAxes ? 20 : 0;
@@ -57,57 +61,62 @@ export class HeatMap {
       }
     }
 
-    this.xScale = d3.scale.linear()
+    this.xScale = d3.scale
+      .linear()
       .domain(xDomain)
       .range([0, width - 2 * padding]);
 
-    this.yScale = d3.scale.linear()
+    this.yScale = d3.scale
+      .linear()
       .domain(yDomain)
       .range([height - 2 * padding, 0]);
 
     // Get a range of colors.
-    let tmpScale = d3.scale.linear<string, number>()
-        .domain([0, .5, 1])
-        .range(["#f59322", "#e8eaeb", "#0877bd"])
-        .clamp(true);
+    let tmpScale = d3.scale
+      .linear<string, number>()
+      .domain([0, 0.5, 1])
+      .range(["#f59322", "#e8eaeb", "#0877bd"])
+      .clamp(true);
     // Due to numerical error, we need to specify
     // d3.range(0, end + small_epsilon, step)
     // in order to guarantee that we will have end/step entries with
     // the last element being equal to end.
-    let colors = d3.range(0, 1 + 1E-9, 1 / NUM_SHADES).map(a => {
+    let colors = d3.range(0, 1 + 1e-9, 1 / NUM_SHADES).map((a) => {
       return tmpScale(a);
     });
-    this.color = d3.scale.quantize()
-                     .domain([-1, 1])
-                     .range(colors);
+    this.color = d3.scale.quantize().domain([-1, 1]).range(colors);
 
-    container = container.append("div")
-      .style({
-        width: `${width}px`,
-        height: `${height}px`,
-        position: "relative",
-        top: `-${padding}px`,
-        left: `-${padding}px`
-      });
-    this.canvas = container.append("canvas")
+    container = container.append("div").style({
+      width: `${width}px`,
+      height: `${height}px`,
+      position: "relative",
+      top: `-${padding}px`,
+      left: `-${padding}px`,
+    });
+    this.canvas = container
+      .append("canvas")
       .attr("width", numSamples)
       .attr("height", numSamples)
-      .style("width", (width - 2 * padding) + "px")
-      .style("height", (height - 2 * padding) + "px")
+      .style("width", width - 2 * padding + "px")
+      .style("height", height - 2 * padding + "px")
       .style("position", "absolute")
       .style("top", `${padding}px`)
       .style("left", `${padding}px`);
 
     if (!this.settings.noSvg) {
-      this.svg = container.append("svg").attr({
-          "width": width,
-          "height": height
-      }).style({
-        // Overlay the svg on top of the canvas.
-        "position": "absolute",
-        "left": "0",
-        "top": "0"
-      }).append("g")
+      this.svg = container
+        .append("svg")
+        .attr({
+          width: width,
+          height: height,
+        })
+        .style({
+          // Overlay the svg on top of the canvas.
+          position: "absolute",
+          left: "0",
+          top: "0",
+        })
+        .append("g")
         .attr("transform", `translate(${padding},${padding})`);
 
       this.svg.append("g").attr("class", "train");
@@ -115,20 +124,18 @@ export class HeatMap {
     }
 
     if (this.settings.showAxes) {
-      let xAxis = d3.svg.axis()
-        .scale(this.xScale)
-        .orient("bottom");
+      let xAxis = d3.svg.axis().scale(this.xScale).orient("bottom");
 
-      let yAxis = d3.svg.axis()
-        .scale(this.yScale)
-        .orient("right");
+      let yAxis = d3.svg.axis().scale(this.yScale).orient("right");
 
-      this.svg.append("g")
+      this.svg
+        .append("g")
         .attr("class", "x axis")
         .attr("transform", `translate(0,${height - 2 * padding})`)
         .call(xAxis);
 
-      this.svg.append("g")
+      this.svg
+        .append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(" + (width - 2 * padding) + ",0)")
         .call(yAxis);
@@ -155,8 +162,8 @@ export class HeatMap {
 
     if (dx !== this.numSamples || dy !== this.numSamples) {
       throw new Error(
-          "The provided data matrix must be of size " +
-          "numSamples X numSamples");
+        "The provided data matrix must be of size " + "numSamples X numSamples"
+      );
     }
 
     // Compute the pixel colors; scaled by CSS.
@@ -167,7 +174,7 @@ export class HeatMap {
       for (let x = 0; x < dx; ++x) {
         let value = data[x][y];
         if (discretize) {
-          value = (value >= 0 ? 1 : -1);
+          value = value >= 0 ? 1 : -1;
         }
         let c = d3.rgb(this.color(value));
         image.data[++p] = c.r;
@@ -176,16 +183,27 @@ export class HeatMap {
         image.data[++p] = 160;
       }
     }
+    // const images = new Image();
+    // images.src =
+    //   "https://static.filehorse.com/icons/compression-and-backup/files-app-icon-32.png";
+    // context.drawImage(images, 0, 0);
+
     context.putImageData(image, 0, 0);
+    // context.font = "10px serif";
+    // context.fillText("RX", 10, 50);
   }
 
   private updateCircles(container, points: Example2D[]) {
     // Keep only points that are inside the bounds.
     let xDomain = this.xScale.domain();
     let yDomain = this.yScale.domain();
-    points = points.filter(p => {
-      return p.x >= xDomain[0] && p.x <= xDomain[1]
-        && p.y >= yDomain[0] && p.y <= yDomain[1];
+    points = points.filter((p) => {
+      return (
+        p.x >= xDomain[0] &&
+        p.x <= xDomain[1] &&
+        p.y >= yDomain[0] &&
+        p.y <= yDomain[1]
+      );
     });
 
     // Attach data to initially empty selection.
@@ -200,20 +218,22 @@ export class HeatMap {
         cx: (d: Example2D) => this.xScale(d.x),
         cy: (d: Example2D) => this.yScale(d.y),
       })
-      .style("fill", d => this.color(d.label));
+      .style("fill", (d) => this.color(d.label));
 
     // Remove points if the length has gone down.
     selection.exit().remove();
   }
-}  // Close class HeatMap.
+} // Close class HeatMap.
 
 export function reduceMatrix(matrix: number[][], factor: number): number[][] {
   if (matrix.length !== matrix[0].length) {
     throw new Error("The provided matrix must be a square matrix");
   }
   if (matrix.length % factor !== 0) {
-    throw new Error("The width/height of the matrix must be divisible by " +
-        "the reduction factor");
+    throw new Error(
+      "The width/height of the matrix must be divisible by " +
+        "the reduction factor"
+    );
   }
   let result: number[][] = new Array(matrix.length / factor);
   for (let i = 0; i < matrix.length; i += factor) {
@@ -226,7 +246,7 @@ export function reduceMatrix(matrix: number[][], factor: number): number[][] {
           avg += matrix[i + k][j + l];
         }
       }
-      avg /= (factor * factor);
+      avg /= factor * factor;
       result[i / factor][j / factor] = avg;
     }
   }
