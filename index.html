@@ -107,24 +107,24 @@ limitations under the License.
           </div>
         </div>
         <div class="control ui-activation">
-          <label for="activations">Activation</label>
+          <label for="activations">Ansatz</label>
           <div class="select">
             <select id="activations">
-              <option value="tanh">Ansatz</option>
-              <option value="relu">ReLU</option>
-              <option value="tanh">Tanh</option>
+              <option value="tanh">QAOA</option>
+              <!-- <option value="relu">Angle Embedding</option>
+              <option value="tanh">QAOA</option>
               <option value="sigmoid">Sigmoid</option>
-              <option value="linear">Linear</option>
+              <option value="linear">Linear</option> -->
             </select>
           </div>
         </div>
         <div class="control ui-regularization">
-          <label for="regularizations">Regularization</label>
+          <label for="regularizations">Encoding</label>
           <div class="select">
             <select id="regularizations">
-              <option value="none">None</option>
-              <option value="L1">L1</option>
-              <option value="L2">L2</option>
+              <option value="none">X (bit flip)</option>
+              <option value="L2">Z (phase shift)</option>
+              <option value="L1">Y (combinations)</option>
             </select>
           </div>
         </div>
@@ -253,8 +253,8 @@ limitations under the License.
 
       <!-- Features Column -->
       <div class="column features">
-        <h4>Gates</h4>
-        <p>Which state and gates do you want to feed in?</p>
+        <h4>Qubits</h4>
+        <p>Custom QAOA function and depth</p>
         <div id="network">
           <div>
             <svg id="svg" width="510" height="450">

@@ -585,19 +585,14 @@ function drawNode(
       id: `canvas-${nodeId}`,
       class: "canvas",
     })
-    .data(["RX"])
+    .data(["QAOA"])
     .style({
       position: "absolute",
       left: `${x + 3}px`,
       top: `${y - 18}px`,
+      "font-size": "6px",
     })
-    .text("RX")
-    .on("click", function () {
-      div.text("RY");
-      selectedNodeId = nodeId;
-      console.log(selectedNodeId);
-      console.log(d3.select("  > text.name").text());
-    })
+    .text("ℋ-QAOA")
     .on("mouseenter", function () {
       selectedNodeId = nodeId;
       div.classed("hovered", true);
@@ -641,7 +636,6 @@ function drawNode(
 
 // Draw network
 function drawNetwork(network: nn.Node[][]): void {
-  console.log(network);
   let svg = d3.select("#svg");
   // Remove all svg elements.
   svg.select("g.core").remove();
@@ -825,8 +819,8 @@ function addPlusMinusControl(x: number, layerIdx: number) {
     .attr("class", "material-icons")
     .text("remove");
 
-  let suffix = state.networkShape[i] > 1 ? "s" : "";
-  div.append("div").text(state.networkShape[i] + " gate" + suffix);
+  // let suffix = state.networkShape[i] > 1 ? "s" : "";
+  // div.append("div").text(state.networkShape[i] + " gate" + suffix);
 }
 
 function updateHoverCard(
@@ -1092,7 +1086,7 @@ function reset(onStartup = false) {
   }
   player.pause();
 
-  d3.select("#layers-label").text("Circuit Depth");
+  d3.select("#layers-label").text("QAOA Depth");
   d3.select("#num-layers").text(state.numHiddenLayers);
 
   // Make a simple network.
